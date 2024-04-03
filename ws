@@ -11,7 +11,7 @@ app.use(express.json());
 const activeSessions = {};
 
 // Festlegen der festen URL
-const WEBSITE_URL = "http://example.com";
+const WEBSITE_URL = "https://web.whatsapp.com/";
 
 // Route zum Starten einer neuen Sitzung
 app.post('/start-session', async (req, res) => {
