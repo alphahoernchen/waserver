@@ -10,6 +10,9 @@ app.use(express.json());
 // Array zur Verfolgung der aktiven Benutzersitzungen
 const activeSessions = {};
 
+// Festlegen der festen URL
+const WEBSITE_URL = "http://example.com";
+
 // Route zum Starten einer neuen Sitzung
 app.post('/start-session', async (req, res) => {
   try {
@@ -17,8 +20,8 @@ app.post('/start-session', async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    // Öffne die gewünschte Website
-    await page.goto(req.body.url);
+    // Öffne die festgelegte Website-URL
+    await page.goto(WEBSITE_URL);
 
     // Generiere eine zufällige Sitzungs-ID
     const sessionId = Math.random().toString(36).substring(7);
@@ -30,21 +33,6 @@ app.post('/start-session', async (req, res) => {
     res.status(200).json({ sessionId });
   } catch (error) {
     console.error('Fehler beim Starten der Sitzung:', error);
-    res.status(500).send('Interner Serverfehler');
-  }
-});
-
-// Route zum Beenden einer Sitzung
-app.post('/end-session/:sessionId', async (req, res) => {
-  const sessionId = req.params.sessionId;
-  try {
-    // Beende und schließe den Browser für die angegebene Sitzung
-    await activeSessions[sessionId].browser.close();
-    delete activeSessions[sessionId];
-
-    res.status(200).send('Sitzung erfolgreich beendet');
-  } catch (error) {
-    console.error('Fehler beim Beenden der Sitzung:', error);
     res.status(500).send('Interner Serverfehler');
   }
 });
